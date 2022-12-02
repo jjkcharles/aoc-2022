@@ -7,7 +7,86 @@ namespace RPS
         
         public static void Main()
         {
-            var input = @"B Z
+            var input = GetInput();
+            var parsedInput = input.Split("\n").ToList();
+            int totalScore=0;
+            int strategyTotalScore=0;
+
+            foreach(var inp in parsedInput)
+            {
+                totalScore += Score(Translate(inp.ToCharArray()[0]),Translate(inp.ToCharArray()[2]));
+                var strategyMyChoice = ComputeMyChoice(Translate(inp.ToCharArray()[0]),inp.ToCharArray()[2].ToString());
+                strategyTotalScore += Score(Translate(inp.ToCharArray()[0]), strategyMyChoice);
+            }
+
+            Console.WriteLine("Total score is {0}", totalScore);
+            Console.WriteLine("Total score is if I had followed Elf's strategy {0}", strategyTotalScore);
+        }
+
+        private static string Translate(char a)
+        {
+            switch(a)
+            {
+                case 'A':
+                case 'X':
+                    return "Rock";
+                case 'B':
+                case 'Y':
+                    return "Paper";
+                case 'C':
+                case 'Z':
+                    return "Scissors";
+            }
+            return "";
+        }
+
+        private static string ComputeMyChoice(string theirChoice, string desiredOutcome)
+        {
+            string myChoice="";
+
+            //X - Lose
+            //Y - Draw
+            //Z - Win
+            if(desiredOutcome=="Y") return theirChoice;
+
+            switch(theirChoice)
+            {
+                case "Rock":
+                    myChoice = desiredOutcome=="Z"?"Paper":"Scissors";
+                    break;
+                case "Paper":
+                    myChoice = desiredOutcome=="Z"?"Scissors":"Rock";
+                    break;
+                case "Scissors":
+                    myChoice = desiredOutcome=="Z"?"Rock":"Paper";
+                    break;
+            }
+            return myChoice;
+        }
+
+        private static int Score(string theirChoice, string myChoice)
+        {
+            int score=0;
+
+            if(myChoice == "Rock") score = 1;
+            if(myChoice == "Paper") score = 2;
+            if(myChoice == "Scissors") score = 3;
+
+            if(theirChoice == myChoice) score+=3;
+
+            if(theirChoice=="Rock" && myChoice=="Scissors") score+=0;
+            if(theirChoice=="Rock" && myChoice=="Paper") score+=6;
+            if(theirChoice=="Scissors" && myChoice=="Paper") score+=0;
+            if(theirChoice=="Scissors" && myChoice=="Rock") score+=6;
+            if(theirChoice=="Paper" && myChoice=="Rock") score+=0;
+            if(theirChoice=="Paper" && myChoice=="Scissors") score+=6;
+
+            return score;
+        }
+
+        private static string GetInput()
+        {
+            return @"B Z
 C Z
 C Z
 A Y
@@ -2507,80 +2586,6 @@ C Z
 A X
 B Z
 C X";
-            var parsedInput = input.Split("\n").ToList();
-            int totalScore=0;
-            int strategyTotalScore=0;
-
-            foreach(var inp in parsedInput)
-            {
-                totalScore += Score(Translate(inp.ToCharArray()[0]),Translate(inp.ToCharArray()[2]));
-                var strategyMyChoice = ComputeMyChoice(Translate(inp.ToCharArray()[0]),inp.ToCharArray()[2].ToString());
-                strategyTotalScore += Score(Translate(inp.ToCharArray()[0]), strategyMyChoice);
-            }
-
-            Console.WriteLine("Total score is {0}", totalScore);
-            Console.WriteLine("Total score is if I had followed Elf's strategy {0}", strategyTotalScore);
-        }
-
-        private static string Translate(char a)
-        {
-            switch(a)
-            {
-                case 'A':
-                case 'X':
-                    return "Rock";
-                case 'B':
-                case 'Y':
-                    return "Paper";
-                case 'C':
-                case 'Z':
-                    return "Scissors";
-            }
-            return "";
-        }
-
-        private static string ComputeMyChoice(string theirChoice, string desiredOutcome)
-        {
-            string myChoice="";
-
-            //X - Lose
-            //Y - Draw
-            //Z - Win
-            if(desiredOutcome=="Y") return theirChoice;
-
-            switch(theirChoice)
-            {
-                case "Rock":
-                    myChoice = desiredOutcome=="Z"?"Paper":"Scissors";
-                    break;
-                case "Paper":
-                    myChoice = desiredOutcome=="Z"?"Scissors":"Rock";
-                    break;
-                case "Scissors":
-                    myChoice = desiredOutcome=="Z"?"Rock":"Paper";
-                    break;
-            }
-            return myChoice;
-        }
-
-        private static int Score(string theirChoice, string myChoice)
-        {
-            int score=0;
-
-            if(myChoice == "Rock") score = 1;
-            if(myChoice == "Paper") score = 2;
-            if(myChoice == "Scissors") score = 3;
-
-            if(theirChoice == myChoice) score+=3;
-
-            if(theirChoice=="Rock" && myChoice=="Scissors") score+=0;
-            if(theirChoice=="Rock" && myChoice=="Paper") score+=6;
-            if(theirChoice=="Scissors" && myChoice=="Paper") score+=0;
-            if(theirChoice=="Scissors" && myChoice=="Rock") score+=6;
-            if(theirChoice=="Paper" && myChoice=="Rock") score+=0;
-            if(theirChoice=="Paper" && myChoice=="Scissors") score+=6;
-
-            return score;
         }
     }
 }
